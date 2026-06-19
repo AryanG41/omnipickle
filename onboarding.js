@@ -16,7 +16,7 @@ function renderOnboarding() {
     <h2>Let's set up your coaching</h2>
 
     <p><strong>Rate your skill (1 = beginner, 10 = advanced):</strong></p>
-    <input type="range" id="skill" min="1" max="10" step="0.5" value="5" style="width: 400px;">
+    <input type="range" id="skill" min="1" max="10" step="0.5" value="5">
     <span id="skillValue">5</span>
 
     <p><strong>What do you want to work on?</strong></p>
