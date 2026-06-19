@@ -1,7 +1,6 @@
 // Onboarding screen
 const app = document.getElementById("app");
 
-const skillLevels = ["2.0", "2.5", "3.0", "3.5", "4.0", "4.5", "5.0"];
 const weaknessOptions = [
   "Third-shot drop",
   "Dinking",
