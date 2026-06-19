@@ -9,17 +9,16 @@ const weaknessOptions = [
   "Return",
   "Volleys",
   "Footwork",
-  "Strategy / positioning",
+  "Strategy / Positioning",
 ];
 
 function renderOnboarding() {
   app.innerHTML = `
     <h2>Let's set up your coaching</h2>
 
-    <p><strong>Your skill level:</strong></p>
-    <select id="skill">
-      ${skillLevels.map((l) => `<option value="${l}">${l}</option>`).join("")}
-    </select>
+    <p><strong>Rate your skill (1 = beginner, 10 = advanced):</strong></p>
+    <input type="range" id="skill" min="1" max="10" step="0.5" value="5" style="width: 400px;">
+    <span id="skillValue">5</span>
 
     <p><strong>What do you want to work on?</strong></p>
     <div id="weaknesses">
@@ -34,6 +33,11 @@ function renderOnboarding() {
     <br>
     <button id="saveBtn">Save & continue</button>
   `;
+  const slider = document.getElementById("skill");
+  const skillValue = document.getElementById("skillValue");
+  slider.addEventListener("input", () => {
+    skillValue.textContent = slider.value;
+  });
   document.getElementById("saveBtn").addEventListener("click", saveProfile);
 }
 
