@@ -10,7 +10,14 @@ const weaknessOptions = [
   "Footwork",
   "Strategy / Positioning",
 ];
-
+function getSkillLabel(value) {
+  const n = parseFloat(value);
+  if (n <= 2.5) return "Beginner";
+  if (n <= 4.5) return "Improver";
+  if (n <= 6.5) return "Intermediate";
+  if (n <= 8.5) return "Advanced";
+  return "Expert";
+}
 function renderOnboarding() {
   app.innerHTML = `
     <h2>Let's set up your coaching</h2>
@@ -34,9 +41,13 @@ function renderOnboarding() {
   `;
   const slider = document.getElementById("skill");
   const skillValue = document.getElementById("skillValue");
-  slider.addEventListener("input", () => {
-    skillValue.textContent = slider.value;
-  });
+
+  function updateSkillLabel() {
+    skillValue.textContent = slider.value + " — " + getSkillLabel(slider.value);
+  }
+
+  slider.addEventListener("input", updateSkillLabel);
+  updateSkillLabel();
   document.getElementById("saveBtn").addEventListener("click", saveProfile);
 }
 
