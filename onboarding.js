@@ -1,14 +1,13 @@
 // Onboarding screen
 const app = document.getElementById("app");
-
 const weaknessOptions = [
-  "Third-shot drop",
-  "Dinking",
-  "Serve",
-  "Return",
-  "Volleys",
-  "Footwork",
-  "Strategy / Positioning",
+  { name: "Third-shot drop", desc: "The soft shot after the serve+return that drops into the no-volley zone" },
+  { name: "Dinking", desc: "Soft, controlled shots just over the net" },
+  { name: "Serve", desc: "How you start the point" },
+  { name: "Return", desc: "Hitting back your opponent's serve" },
+  { name: "Volleys", desc: "Hitting the ball before it bounces" },
+  { name: "Footwork", desc: "Moving and positioning around the court" },
+  { name: "Strategy / positioning", desc: "Knowing where to stand and which shot to pick" },
 ];
 function getSkillLabel(value) {
   const n = parseFloat(value);
@@ -27,11 +26,12 @@ function renderOnboarding() {
     <span id="skillValue">5</span>
 
     <p><strong>What do you want to work on?</strong></p>
+        <p style="font-size:0.9em; opacity:0.75;">New to pickleball? Just pick whatever sounds relevant — your coach will help you figure out the rest.</p>
     <div id="weaknesses">
       ${weaknessOptions
         .map(
           (w) =>
-            `<div><label><input type="checkbox" value="${w}"> ${w}</label></div>`
+            `<div><label><input type="checkbox" value="${w.name}"> <strong>${w.name}</strong><br><span class="desc">${w.desc}</span></label></div>`
         )
         .join("")}
     </div>
