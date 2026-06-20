@@ -76,7 +76,7 @@ async function loadPlan() {
       });
     });
   }
-
+  html += `<a href="onboarding.html" class="editBtn">Edit my focus areas</a>`;
   planArea.innerHTML = html;
 }
 
