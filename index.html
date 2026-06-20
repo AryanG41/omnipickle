@@ -3,20 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OmniPickle</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>OmniPickle — Sign in</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
-    <img src="logo.jpeg" alt="OmniPickle logo" style="height: 160px; display:block; margin:0 auto 8px;">
-    <h1>OmniPickle</h1>
-    <p>Stop guessing, start improving!</p>
+    <img src="logo.jpeg" alt="OmniPickle logo">
+    <p>Sign in to start improving</p>
   </header>
 
-  <main id="app"></main>
+  <main>
+    <h2>Welcome</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button id="signupBtn">Sign Up</button>
+    <button id="loginBtn">Log In</button>
+    <p id="authMsg"></p>
+  </main>
 
-  <script src="onboarding.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+  <script src="login.js"></script>
 </body>
 </html>
