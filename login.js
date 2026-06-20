@@ -19,6 +19,6 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     authMsg.textContent = "Error: " + error.message;
   } else {
     authMsg.textContent = "Logged in!";
-    window.location.href = "index.html";
+    window.location.href = "onboarding.html";
   }
 });
