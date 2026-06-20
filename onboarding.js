@@ -1,5 +1,5 @@
-// Onboarding screen
 const app = document.getElementById("app");
+
 const weaknessOptions = [
   { name: "Third-shot drop", desc: "The soft shot after the serve+return that drops into the no-volley zone" },
   { name: "Dinking", desc: "Soft, controlled shots just over the net" },
@@ -9,6 +9,7 @@ const weaknessOptions = [
   { name: "Footwork", desc: "Moving and positioning around the court" },
   { name: "Strategy / positioning", desc: "Knowing where to stand and which shot to pick" },
 ];
+
 function getSkillLabel(value) {
   const n = parseFloat(value);
   if (n <= 2.5) return "Beginner";
@@ -17,16 +18,18 @@ function getSkillLabel(value) {
   if (n <= 8.5) return "Advanced";
   return "Expert";
 }
+
 function renderOnboarding() {
   app.innerHTML = `
     <h2>Let's set up your coaching</h2>
 
     <p><strong>Rate your skill (1 = beginner, 10 = advanced):</strong></p>
-    <input type="range" id="skill" min="1" max="10" step="0.5" value="5">
+    <p style="font-size:0.9em; opacity:0.75;">Not sure? Just estimate — the coach adjusts as you go.</p>
+    <input type="range" id="skill" min="1" max="10" value="5" step="0.5">
     <span id="skillValue">5</span>
 
     <p><strong>What do you want to work on?</strong></p>
-        <p style="font-size:0.9em; opacity:0.75;">New to pickleball? Just pick whatever sounds relevant — your coach will help you figure out the rest.</p>
+    <p style="font-size:0.9em; opacity:0.75;">New to pickleball? Just pick whatever sounds relevant — your coach helps with the rest.</p>
     <div id="weaknesses">
       ${weaknessOptions
         .map(
@@ -39,6 +42,7 @@ function renderOnboarding() {
     <br>
     <button id="saveBtn">Save & continue</button>
   `;
+
   const slider = document.getElementById("skill");
   const skillValue = document.getElementById("skillValue");
 
@@ -48,25 +52,40 @@ function renderOnboarding() {
 
   slider.addEventListener("input", updateSkillLabel);
   updateSkillLabel();
+
   document.getElementById("saveBtn").addEventListener("click", saveProfile);
 }
 
-function saveProfile() {
+async function saveProfile() {
   const skill = document.getElementById("skill").value;
   const checked = [...document.querySelectorAll("#weaknesses input:checked")].map(
     (c) => c.value
   );
-  localStorage.setItem(
-    "omnipickleProfile",
-    JSON.stringify({ skill, weaknesses: checked })
+
+  // Who is logged in?
+  const { data: { user } } = await db.auth.getUser();
+  if (!user) {
+    alert("Please log in first.");
+    window.location.href = "index.html";
+    return;
+  }
+
+  // Save their profile to the database (one row per user)
+  const { error } = await db.from("profiles").upsert(
+    {
+      user_id: user.id,
+      skill: skill,
+      weaknesses: JSON.stringify(checked),
+    },
+    { onConflict: "user_id" }
   );
 
-  app.innerHTML = `
-    <h2>You're all set!</h2>
-    <p>Skill level: ${skill}</p>
-    <p>Working on: ${checked.join(", ") || "nothing selected yet"}</p>
-    <p>Next we'll build your practice plan.</p>
-  `;
+  if (error) {
+    alert("Couldn't save: " + error.message);
+    return;
+  }
+
+  window.location.href = "plan.html";
 }
 
 renderOnboarding();
