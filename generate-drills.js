@@ -28,7 +28,6 @@ Respond ONLY with JSON in exactly this shape:
     const data = await response.json();
     const plan = JSON.parse(data.choices[0].message.content);
     res.status(200).json(plan);
-  } catch (err) {
-    res.status(500).json({ error: "Could not generate drills" });
-  }
-}
+  }  catch (err) {
+    res.status(500).json({ error: err.message, detail: String(err) });
+    }
