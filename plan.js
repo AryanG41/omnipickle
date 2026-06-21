@@ -1,34 +1,3 @@
-const drillLibrary = {
-  "Third-shot drop": [
-    { name: "Drop & Reset", desc: "From the baseline, hit 20 soft drops aiming to land in the kitchen. Focus on a gentle arc." },
-    { name: "Third-Shot Targets", desc: "Put a towel in the kitchen and try to land your third shot on it 10 times." },
-  ],
-  "Dinking": [
-    { name: "Cross-Court Dinks", desc: "Rally cross-court dinks with a partner for 5 minutes without popping the ball up." },
-    { name: "Dink Targets", desc: "Aim dinks at the corners of the kitchen, 15 reps each side." },
-  ],
-  "Serve": [
-    { name: "Deep Serve", desc: "Serve 20 balls aiming for the back third of the service box." },
-    { name: "Consistent Toss", desc: "Hit 20 serves focusing on the exact same contact point each time." },
-  ],
-  "Return": [
-    { name: "Deep Returns", desc: "Return 20 serves aiming deep, then sprint to the kitchen line." },
-    { name: "Return & Rush", desc: "After each return, rush the net. Repeat 15 times." },
-  ],
-  "Volleys": [
-    { name: "Wall Volleys", desc: "Volley against a wall for 2 minutes, keeping the paddle out front." },
-    { name: "Punch Volleys", desc: "With a partner, hit 20 controlled punch volleys at the net." },
-  ],
-  "Footwork": [
-    { name: "Split-Step Drill", desc: "Split-step as your partner hits, 15 reps. Stay on the balls of your feet." },
-    { name: "Lateral Shuffles", desc: "3 sets of side-to-side shuffles to sharpen court movement." },
-  ],
-  "Strategy / positioning": [
-    { name: "Move As A Team", desc: "Play points focusing on getting to the net together with your partner." },
-    { name: "Drop vs Drive", desc: "Play out points, choosing drop or drive based on how deep the return was." },
-  ],
-};
-
 function skillWord(value) {
   const n = parseFloat(value);
   if (n <= 2.5) return "Beginner";
@@ -60,24 +29,49 @@ async function loadPlan() {
   const skill = profiles[0].skill;
   const weaknesses = JSON.parse(profiles[0].weaknesses || "[]");
 
-  let html = `
+  // Show a loading state while the AI works
+  planArea.innerHTML = `
     <h2>Your Practice Plan</h2>
     <p>Your level: <span class="badge">${skill} — ${skillWord(skill)}</span></p>
-    <p class="intro">Work through these this week. Quality reps over speed.</p>
+    <p class="intro">Generating fresh drills for you…</p>
   `;
 
   if (weaknesses.length === 0) {
-    html += `<p>You didn't pick any focus areas. <a href="onboarding.html">Pick some</a> to get drills.</p>`;
-  } else {
-    weaknesses.forEach((w) => {
-      html += `<h3>${w}</h3>`;
-      (drillLibrary[w] || []).forEach((d, i) => {
+    planArea.innerHTML += `<p>You didn't pick any focus areas. <a href="onboarding.html">Pick some</a> to get drills.</p>`;
+    return;
+  }
+
+  try {
+    const resp = await fetch("/api/generate-drills", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ skill, weaknesses }),
+    });
+    const result = await resp.json();
+
+    if (!result.plan) throw new Error("No plan returned");
+
+    let html = `
+      <h2>Your Practice Plan</h2>
+      <p>Your level: <span class="badge">${skill} — ${skillWord(skill)}</span></p>
+      <p class="intro">Work through these this week. Quality reps over speed.</p>
+    `;
+
+    result.plan.forEach((section) => {
+      html += `<h3>${section.focus}</h3>`;
+      section.drills.forEach((d, i) => {
         html += `<div class="drill"><span class="num">${i + 1}</span><div><strong>${d.name}</strong><p>${d.desc}</p></div></div>`;
       });
     });
+
+    html += `<a href="onboarding.html" class="editBtn">Edit my focus areas</a>`;
+    html += `<button id="regenBtn" class="editBtn" style="margin-left:10px;cursor:pointer;background:none;font-family:inherit;font-size:1em;">New drills</button>`;
+
+    planArea.innerHTML = html;
+    document.getElementById("regenBtn").addEventListener("click", loadPlan);
+  } catch (err) {
+    planArea.innerHTML += `<p>Couldn't generate drills right now. Refresh to try again.</p>`;
   }
-  html += `<a href="onboarding.html" class="editBtn">Edit my focus areas</a>`;
-  planArea.innerHTML = html;
 }
 
 loadPlan();
