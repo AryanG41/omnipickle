@@ -207,3 +207,26 @@ h3 {
   font-size: 1.05em;
   margin: 12px 0;
 }
+.drill {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: #f7f4ec;
+  border-left: 4px solid #1f3a5a;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin: 10px 0;
+  transition: opacity 0.4s, transform 0.4s;
+}
+.drill.fading {
+  opacity: 0;
+  transform: translateX(20px);
+}
+.drillCheck {
+  width: 22px;
+  height: 22px;
+  accent-color: #1f3a5a;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 2px;
+}

@@ -8,46 +8,41 @@ function skillWord(value) {
 }
 
 const planArea = document.getElementById("planArea");
+let userId = null;
+let skill = null;
+let goal = 7;
+let doneThisWeek = 0;
 
 async function loadPlan() {
   const { data: { user } } = await db.auth.getUser();
-  if (!user) {
-    window.location.href = "index.html";
-    return;
-  }
+  if (!user) { window.location.href = "index.html"; return; }
+  userId = user.id;
 
   const { data: profiles } = await db
     .from("profiles")
     .select("skill, weaknesses, weekly_goal")
-    .eq("user_id", user.id);
+    .eq("user_id", userId);
+  if (!profiles || profiles.length === 0) { window.location.href = "onboarding.html"; return; }
 
-  if (!profiles || profiles.length === 0) {
-    window.location.href = "onboarding.html";
-    return;
-  }
-
-  const skill = profiles[0].skill;
+  skill = profiles[0].skill;
   const weaknesses = JSON.parse(profiles[0].weaknesses || "[]");
-  const goal = parseInt(profiles[0].weekly_goal) || 7;
+  goal = parseInt(profiles[0].weekly_goal) || 7;
 
-  // count drills completed in the last 7 days
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const { data: completions } = await db
-    .from("completions")
-    .select("id")
-    .eq("user_id", user.id)
-    .gte("created_at", weekAgo);
-  const doneThisWeek = completions ? completions.length : 0;
+    .from("completions").select("id").eq("user_id", userId).gte("created_at", weekAgo);
+  doneThisWeek = completions ? completions.length : 0;
 
   planArea.innerHTML = `
     <h2>Your Practice Plan</h2>
     <p>Your level: <span class="badge">${skill} — ${skillWord(skill)}</span></p>
-    <p class="progress">Completed this week: <strong>${doneThisWeek} / ${goal}</strong></p>
+    <p class="progress" id="progress"></p>
     <p class="intro">Generating fresh drills for you…</p>
   `;
+  updateProgress();
 
   if (weaknesses.length === 0) {
-    planArea.innerHTML += `<p>You didn't pick any focus areas. <a href="onboarding.html">Pick some</a> to get drills.</p>`;
+    document.querySelector(".intro").innerHTML = `You didn't pick any focus areas. <a href="onboarding.html">Pick some</a>.`;
     return;
   }
 
@@ -58,30 +53,74 @@ async function loadPlan() {
       body: JSON.stringify({ skill, weaknesses }),
     });
     const result = await resp.json();
-    if (!result.plan) throw new Error("No plan returned");
+    if (!result.plan) throw new Error("No plan");
 
     let html = `
       <h2>Your Practice Plan</h2>
       <p>Your level: <span class="badge">${skill} — ${skillWord(skill)}</span></p>
-      <p class="progress">Completed this week: <strong>${doneThisWeek} / ${goal}</strong></p>
-      <p class="intro">Work through these this week. Quality reps over speed.</p>
+      <p class="progress" id="progress"></p>
+      <p class="intro">Check off drills as you finish — fresh ones appear automatically.</p>
     `;
-
     result.plan.forEach((section) => {
       html += `<h3>${section.focus}</h3>`;
-      section.drills.forEach((d, i) => {
-        html += `<div class="drill"><span class="num">${i + 1}</span><div><strong>${d.name}</strong><p>${d.desc}</p></div></div>`;
+      section.drills.forEach((d) => {
+        html += `
+          <div class="drill" data-focus="${section.focus}">
+            <input type="checkbox" class="drillCheck">
+            <div class="drillBody"><strong>${d.name}</strong><p>${d.desc}</p></div>
+          </div>`;
       });
     });
-
     html += `<a href="onboarding.html" class="editBtn">Edit my focus areas</a>`;
-    html += `<button id="regenBtn" class="editBtn" style="margin-left:10px;cursor:pointer;background:none;font-family:inherit;font-size:1em;">New drills</button>`;
-
     planArea.innerHTML = html;
-    document.getElementById("regenBtn").addEventListener("click", loadPlan);
+    updateProgress();
+
+    document.querySelectorAll(".drillCheck").forEach((box) => {
+      box.addEventListener("change", () => onCheck(box));
+    });
   } catch (err) {
-    planArea.innerHTML += `<p>Couldn't generate drills right now. Refresh to try again.</p>`;
+    document.querySelector(".intro").textContent = "Couldn't generate drills right now. Refresh to try again.";
   }
+}
+
+function updateProgress() {
+  const el = document.getElementById("progress");
+  if (!el) return;
+  if (doneThisWeek >= goal) {
+    el.innerHTML = `All ${goal} drills done this week — rest up! 🎉`;
+  } else {
+    el.innerHTML = `Completed this week: <strong>${doneThisWeek} / ${goal}</strong>`;
+  }
+}
+
+async function onCheck(box) {
+  if (!box.checked) return;
+  const card = box.closest(".drill");
+  const focus = card.dataset.focus;
+  box.disabled = true;
+
+  await db.from("completions").insert({ user_id: userId, focus: focus });
+  doneThisWeek++;
+  updateProgress();
+
+  card.classList.add("fading");
+  const newDrill = await getOneDrill(skill, focus);
+
+  card.querySelector(".drillBody").innerHTML = `<strong>${newDrill.name}</strong><p>${newDrill.desc}</p>`;
+  box.checked = false;
+  box.disabled = false;
+  card.classList.remove("fading");
+}
+
+async function getOneDrill(skill, focus) {
+  const resp = await fetch("/api/generate-drills", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ skill, weaknesses: [focus] }),
+  });
+  const result = await resp.json();
+  const drills = result.plan[0].drills;
+  return drills[Math.floor(Math.random() * drills.length)];
 }
 
 loadPlan();
