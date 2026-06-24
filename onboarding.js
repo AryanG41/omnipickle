@@ -49,19 +49,17 @@ function renderOnboarding() {
 
   const slider = document.getElementById("skill");
   const skillValue = document.getElementById("skillValue");
-
   function updateSkillLabel() {
     skillValue.textContent = slider.value + " — " + getSkillLabel(slider.value);
   }
-
   slider.addEventListener("input", updateSkillLabel);
   updateSkillLabel();
+
   const goal = document.getElementById("goal");
   const goalValue = document.getElementById("goalValue");
   goal.addEventListener("input", () => {
     goalValue.textContent = goal.value;
   });
-
 
   document.getElementById("saveBtn").addEventListener("click", saveProfile);
 }
@@ -71,6 +69,7 @@ async function saveProfile() {
   const checked = [...document.querySelectorAll("#weaknesses input:checked")].map(
     (c) => c.value
   );
+  const goalVal = document.getElementById("goal").value;
 
   const { data: { user } } = await db.auth.getUser();
   if (!user) {
@@ -78,39 +77,13 @@ async function saveProfile() {
     window.location.href = "index.html";
     return;
   }
-  const goalVal = document.getElementById("goal").value;
+
   const { error } = await db.from("profiles").upsert(
     {
       user_id: user.id,
       skill: skill,
       weaknesses: JSON.stringify(checked),
       weekly_goal: goalVal,
-    },
-    { onConflict: "user_id" }
-  );
-
-  if (error) {
-    alert("Couldn't save: " + error.message);
-    return;
-  }
-
-  window.location.href = "plan.html";
-}
-
-  // Who is logged in?
-  const { data: { user } } = await db.auth.getUser();
-  if (!user) {
-    alert("Please log in first.");
-    window.location.href = "index.html";
-    return;
-  }
-
-  // Save their profile to the database (one row per user)
-  const { error } = await db.from("profiles").upsert(
-    {
-      user_id: user.id,
-      skill: skill,
-      weaknesses: JSON.stringify(checked),
     },
     { onConflict: "user_id" }
   );
