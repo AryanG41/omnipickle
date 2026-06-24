@@ -18,7 +18,7 @@ async function loadPlan() {
 
   const { data: profiles } = await db
     .from("profiles")
-    .select("skill, weaknesses")
+    .select("skill, weaknesses, weekly_goal")
     .eq("user_id", user.id);
 
   if (!profiles || profiles.length === 0) {
@@ -28,11 +28,21 @@ async function loadPlan() {
 
   const skill = profiles[0].skill;
   const weaknesses = JSON.parse(profiles[0].weaknesses || "[]");
+  const goal = parseInt(profiles[0].weekly_goal) || 7;
 
-  // Show a loading state while the AI works
+  // count drills completed in the last 7 days
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const { data: completions } = await db
+    .from("completions")
+    .select("id")
+    .eq("user_id", user.id)
+    .gte("created_at", weekAgo);
+  const doneThisWeek = completions ? completions.length : 0;
+
   planArea.innerHTML = `
     <h2>Your Practice Plan</h2>
     <p>Your level: <span class="badge">${skill} — ${skillWord(skill)}</span></p>
+    <p class="progress">Completed this week: <strong>${doneThisWeek} / ${goal}</strong></p>
     <p class="intro">Generating fresh drills for you…</p>
   `;
 
@@ -48,12 +58,12 @@ async function loadPlan() {
       body: JSON.stringify({ skill, weaknesses }),
     });
     const result = await resp.json();
-
     if (!result.plan) throw new Error("No plan returned");
 
     let html = `
       <h2>Your Practice Plan</h2>
       <p>Your level: <span class="badge">${skill} — ${skillWord(skill)}</span></p>
+      <p class="progress">Completed this week: <strong>${doneThisWeek} / ${goal}</strong></p>
       <p class="intro">Work through these this week. Quality reps over speed.</p>
     `;
 

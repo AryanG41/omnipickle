@@ -199,3 +199,11 @@ h3 {
   background: #1f3a5a;
   color: #f3ecd9;
 }
+.progress {
+  background: #e4e9f1;
+  color: #1f3a5a;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 1.05em;
+  margin: 12px 0;
+}
