@@ -39,6 +39,10 @@ function renderOnboarding() {
         .join("")}
     </div>
 
+    <p><strong>How many drills do you want to complete per week?</strong></p>
+    <input type="range" id="goal" min="3" max="20" value="7">
+    <span id="goalValue">7</span>
+
     <br>
     <button id="saveBtn">Save & continue</button>
   `;
@@ -52,6 +56,12 @@ function renderOnboarding() {
 
   slider.addEventListener("input", updateSkillLabel);
   updateSkillLabel();
+  const goal = document.getElementById("goal");
+  const goalValue = document.getElementById("goalValue");
+  goal.addEventListener("input", () => {
+    goalValue.textContent = goal.value;
+  });
+
 
   document.getElementById("saveBtn").addEventListener("click", saveProfile);
 }
@@ -61,6 +71,31 @@ async function saveProfile() {
   const checked = [...document.querySelectorAll("#weaknesses input:checked")].map(
     (c) => c.value
   );
+
+  const { data: { user } } = await db.auth.getUser();
+  if (!user) {
+    alert("Please log in first.");
+    window.location.href = "index.html";
+    return;
+  }
+  const goalVal = document.getElementById("goal").value;
+  const { error } = await db.from("profiles").upsert(
+    {
+      user_id: user.id,
+      skill: skill,
+      weaknesses: JSON.stringify(checked),
+      weekly_goal: goalVal,
+    },
+    { onConflict: "user_id" }
+  );
+
+  if (error) {
+    alert("Couldn't save: " + error.message);
+    return;
+  }
+
+  window.location.href = "plan.html";
+}
 
   // Who is logged in?
   const { data: { user } } = await db.auth.getUser();
