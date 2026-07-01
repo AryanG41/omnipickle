@@ -72,6 +72,7 @@ async function loadPlan() {
       });
     });
     html += `<a href="onboarding.html" class="editBtn">Edit my focus areas</a>`;
+    html += `<a href="chat.html" class="editBtn" style="margin-left:10px;">Talk to your coach</a>`;
     planArea.innerHTML = html;
     updateProgress();
 
