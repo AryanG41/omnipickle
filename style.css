@@ -337,3 +337,73 @@ h3 {
 .appHeader { display: flex; justify-content: center; margin: 12px 0 22px; }
 .appLogo { height: 80px; width: auto; object-fit: contain; }
 .rowIcon { width: 40px; height: 40px; border-radius: 12px; background: #eef1e5; display: flex; align-items: center; justify-content: center; color: #1f3a5a; font-size: 18px; }
+#login {
+  max-width: 400px;
+  text-align: center;
+}
+#login .appLogo {
+  height: 90px;
+  display: block;
+  margin: 4px auto 8px;
+}
+.loginTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1f3a5a;
+  margin: 0 0 4px;
+}
+.loginSub {
+  color: #7a8496;
+  font-size: 14px;
+  margin: 0 0 22px;
+}
+.field {
+  display: block;
+  width: 100%;
+  padding: 13px 15px;
+  margin: 0 0 12px;
+  border: 1px solid #d8d2c4;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 15px;
+  background: #faf8f3;
+  color: #1f3a5a;
+}
+.field:focus {
+  outline: none;
+  border-color: #1f3a5a;
+}
+.btnPrimary {
+  display: block;
+  width: 100%;
+  background: #1f3a5a;
+  color: #f3ecd9;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+.btnPrimary:hover { background: #16293f; }
+.btnSecondary {
+  display: block;
+  width: 100%;
+  background: none;
+  color: #1f3a5a;
+  border: 1px solid #1f3a5a;
+  padding: 13px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btnSecondary:hover { background: #eef1e5; }
+.authMsg {
+  color: #a33;
+  font-size: 14px;
+  margin-top: 14px;
+}
