@@ -18,7 +18,6 @@ async function loadHome() {
   home.innerHTML = `
     <div class="appHeader">
       <img src="logo.jpeg" class="appLogo" alt="OmniPickle">
-      <span class="appName">OmniPickle</span>
     </div>
 
     <div class="greeting">Welcome back — ready to sharpen your game?</div>
@@ -30,19 +29,19 @@ async function loadHome() {
     </div>
 
     <a href="plan.html" class="rowCard">
-      <div class="rowIcon">📋</div>
+      <div class="rowIcon"><i class="fa-solid fa-list-check"></i></div>
       <div class="rowText"><div class="rowTitle">My weekly plan</div><div class="rowSub">Your drills for the week</div></div>
       <div class="rowChevron">›</div>
     </a>
 
     <a href="chat.html" class="rowCard">
-      <div class="rowIcon">💬</div>
+      <div class="rowIcon"><i class="fa-solid fa-comments"></i></div>
       <div class="rowText"><div class="rowTitle">Talk to coach</div><div class="rowSub">Ask anything about your game</div></div>
       <div class="rowChevron">›</div>
     </a>
 
     <a href="onboarding.html" class="rowCard">
-      <div class="rowIcon">⚙️</div>
+      <div class="rowIcon"><i class="fa-solid fa-sliders"></i></div>
       <div class="rowText"><div class="rowTitle">Edit my profile</div><div class="rowSub">Level, goals, and focus areas</div></div>
       <div class="rowChevron">›</div>
     </a>

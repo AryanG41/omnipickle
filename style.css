@@ -334,3 +334,6 @@ h3 {
 .rowTitle { color: #1f3a5a; font-weight: 600; font-size: 15px; }
 .rowSub { color: #7a8496; font-size: 12px; }
 .rowChevron { color: #c2c9d2; font-size: 20px; }
+.appHeader { display: flex; justify-content: center; margin: 12px 0 22px; }
+.appLogo { height: 80px; width: auto; object-fit: contain; }
+.rowIcon { width: 40px; height: 40px; border-radius: 12px; background: #eef1e5; display: flex; align-items: center; justify-content: center; color: #1f3a5a; font-size: 18px; }
