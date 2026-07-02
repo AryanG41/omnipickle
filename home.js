@@ -104,13 +104,13 @@ async function loadHome() {
     const canvas = await html2canvas(card, { scale: 2 });
     canvas.toBlob(async (blob) => {
       const file = new File([blob], "omnipickle-week.png", { type: "image/png" });
-      try {
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      if (navigator.share) {
+        try {
           await navigator.share({ files: [file], title: "My OmniPickle week" });
           return;
+        } catch (e) {
+          if (e.name === "AbortError") return;
         }
-      } catch (e) {
-        if (e.name === "AbortError") return;
       }
       const url = URL.createObjectURL(blob);
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
