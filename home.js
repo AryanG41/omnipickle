@@ -113,13 +113,17 @@ async function loadHome() {
         if (e.name === "AbortError") return;
       }
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "omnipickle-week.png";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        window.open(url, "_blank");
+      } else {
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "omnipickle-week.png";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
     });
   });
 }
