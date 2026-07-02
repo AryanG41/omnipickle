@@ -115,7 +115,22 @@ async function loadHome() {
       const url = URL.createObjectURL(blob);
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
       if (isIOS) {
-        window.open(url, "_blank");
+        const overlay = document.createElement("div");
+        overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;";
+        const img = document.createElement("img");
+        img.src = url;
+        img.style.cssText = "max-width:90%;max-height:70vh;border-radius:12px;";
+        const note = document.createElement("p");
+        note.textContent = "Long-press the image to save or share it";
+        note.style.cssText = "color:#fff;margin:16px 0;font-family:inherit;text-align:center;";
+        const closeBtn = document.createElement("button");
+        closeBtn.textContent = "Done";
+        closeBtn.style.cssText = "background:#f3ecd9;color:#1f3a5a;border:none;padding:12px 28px;border-radius:10px;font-family:inherit;font-weight:600;cursor:pointer;";
+        closeBtn.onclick = () => overlay.remove();
+        overlay.appendChild(img);
+        overlay.appendChild(note);
+        overlay.appendChild(closeBtn);
+        document.body.appendChild(overlay);
       } else {
         const a = document.createElement("a");
         a.href = url;
