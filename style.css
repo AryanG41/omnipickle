@@ -409,3 +409,23 @@ h3 {
   font-size: 14px;
   margin-top: 14px;
 }
+#planArea {
+  background: transparent;
+  box-shadow: none;
+  padding: 0 4px;
+  max-width: 440px;
+}
+.progress {
+  background: #1f3a5a;
+  color: #f3ecd9;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-size: 1em;
+  margin: 8px 0 20px;
+}
+.progress strong { color: #e3b566; }
+.drill {
+  background: #fff;
+  border-left: 0;
+  border-radius: 14px;
+}
