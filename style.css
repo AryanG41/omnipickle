@@ -302,3 +302,13 @@ h3 {
   opacity: 0.85;
   margin-top: 4px;
 }
+.backLink {
+  display: inline-block;
+  margin: 16px 0 0 16px;
+  color: #1f3a5a;
+  text-decoration: none;
+  font-weight: 600;
+}
+.backLink:hover {
+  text-decoration: underline;
+}
