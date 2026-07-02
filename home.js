@@ -85,12 +85,12 @@ async function loadHome() {
     <button id="logoutBtn" class="editBtn" style="margin-top:8px;">Log out</button>
 
     <div id="shareCard" style="position:absolute; left:-9999px; top:0; width:360px; background:#1f3a5a; color:#f3ecd9; padding:36px 30px; box-sizing:border-box;">
-      <div style="font-size:20px; font-weight:700; margin-bottom:24px;">OmniPickle</div>
+      <img src="logo.jpeg" style="height:48px; margin-bottom:20px;">
       <div style="font-size:15px; color:#aeb9cc;">My week</div>
       <div style="font-size:48px; font-weight:700; margin:4px 0;">${done} <span style="font-size:22px; color:#9fb0c8;">/ ${goal}</span></div>
       <div style="font-size:15px; color:#aeb9cc; margin-bottom:20px;">drills completed</div>
       <div style="font-size:22px; font-weight:600; color:#e3b566;">🔥 ${streak} day streak</div>
-      <div style="margin-top:28px; font-size:13px; color:#8595ad;">Training with OmniPickle 🎾</div>
+      <div style="margin-top:28px; font-size:13px; color:#8595ad;">Training with OmniPickle</div>
     </div>
   `;
 
