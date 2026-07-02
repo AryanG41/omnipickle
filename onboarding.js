@@ -96,4 +96,35 @@ async function saveProfile() {
   window.location.href = "plan.html";
 }
 
-renderOnboarding();
+async function init() {
+  renderOnboarding();
+
+  const { data: { user } } = await db.auth.getUser();
+  if (!user) return;
+
+  const { data: profiles } = await db
+    .from("profiles")
+    .select("skill, weaknesses, weekly_goal")
+    .eq("user_id", user.id);
+  if (!profiles || profiles.length === 0) return; // new user → keep defaults
+
+  const p = profiles[0];
+
+  // pre-set the skill slider
+  const slider = document.getElementById("skill");
+  slider.value = p.skill;
+  slider.dispatchEvent(new Event("input"));
+
+  // pre-set the weekly goal slider
+  const goal = document.getElementById("goal");
+  goal.value = p.weekly_goal || 7;
+  goal.dispatchEvent(new Event("input"));
+
+  // re-check the weaknesses they already picked
+  const chosen = JSON.parse(p.weaknesses || "[]");
+  document.querySelectorAll("#weaknesses input").forEach((box) => {
+    if (chosen.includes(box.value)) box.checked = true;
+  });
+}
+
+init();
