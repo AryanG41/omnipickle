@@ -30,7 +30,7 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     .eq("user_id", data.user.id);
 
   if (profiles && profiles.length > 0) {
-    window.location.href = "plan.html";        // returning user → straight to plan
+    window.location.href = "home.html";        // returning user → straight to plan
   } else {
     window.location.href = "onboarding.html";  // new user → onboarding
   }
