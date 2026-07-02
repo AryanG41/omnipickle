@@ -262,6 +262,7 @@ h3 {
 }
 #userInput {
   flex: 1;
+  min-width: 0;
   padding: 12px;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -269,6 +270,7 @@ h3 {
   font-size: 1em;
 }
 #sendBtn {
+  flex-shrink: 0;
   background: #1f3a5a;
   color: #f3ecd9;
   border: none;
