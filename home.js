@@ -77,9 +77,29 @@ async function loadHome() {
     </a>
 
     <button id="shareBtn" class="rowCard" style="border:0; width:100%; cursor:pointer; font-family:inherit; text-align:left;">
-      <div class="rowIcon"><i class="fa-solid fa-share-nodes"></i></div>
-      <div class="rowText"><div class="rowTitle">Share my week</div><div class="rowSub">Post your progress</div></div>
-      <div class="rowChevron">›</div>
+      document.getElementById("shareBtn").addEventListener("click", async () => {
+    const card = document.getElementById("shareCard");
+    const canvas = await html2canvas(card, { scale: 2 });
+    canvas.toBlob(async (blob) => {
+      const file = new File([blob], "omnipickle-week.png", { type: "image/png" });
+      try {
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], title: "My OmniPickle week" });
+          return;
+        }
+      } catch (e) {
+        if (e.name === "AbortError") return;
+      }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "omnipickle-week.png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+  });
     </button>
 
     <button id="logoutBtn" class="editBtn" style="margin-top:8px;">Log out</button>
