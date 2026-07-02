@@ -71,4 +71,18 @@ async function loadHome() {
     </a>
 
     <a href="onboarding.html" class="rowCard">
-      <div class="rowIcon"><i class="fa-solid
+      <div class="rowIcon"><i class="fa-solid fa-sliders"></i></div>
+      <div class="rowText"><div class="rowTitle">Edit my profile</div><div class="rowSub">Level, goals, and focus areas</div></div>
+      <div class="rowChevron">›</div>
+    </a>
+
+    <button id="logoutBtn" class="editBtn" style="margin-top:8px;">Log out</button>
+  `;
+
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await db.auth.signOut();
+    window.location.href = "index.html";
+  });
+}
+
+loadHome();
