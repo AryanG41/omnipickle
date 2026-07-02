@@ -466,3 +466,15 @@ h3 {
   margin-top: 16px;
 }
 #saveBtn:hover { background: #16293f; }
+.streak {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fbe9d2;
+  color: #a85d1a;
+  padding: 8px 14px;
+  border-radius: 99px;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 18px;
+}
