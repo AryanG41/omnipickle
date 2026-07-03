@@ -27,7 +27,7 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
   });
   authMsg.textContent = error
     ? "Error: " + error.message
-    : "Check your email for a reset link.";
+    : "Email sent! Check your inbox for the reset link.";
 });
 
   if (error) {
