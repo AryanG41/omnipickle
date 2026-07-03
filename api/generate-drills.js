@@ -9,8 +9,14 @@ export default async function handler(req, res) {
     if (!body) body = {};
     const skill = body.skill;
     const weaknesses = body.weaknesses || [];
+    const mode = body.mode || "partner";
+
+    const modeLine = mode === "solo"
+      ? "IMPORTANT: The player is training ALONE with no partner. Only give drills they can do solo — wall drills, footwork and agility, serving practice, target practice, shadow swings. Do NOT include any drill that needs a partner or a feeder."
+      : "The player has a partner to train with.";
 
     const prompt = `You are an expert pickleball coach. A player rates their skill ${skill} out of 10.
+${modeLine}
 Create a practice plan with 3 specific, varied drills for EACH of these focus areas: ${weaknesses.join(", ")}.
 Match the difficulty to their level. Each drill needs a short punchy name and a 1-2 sentence description with concrete reps or targets.
 Respond ONLY with JSON in exactly this shape:
@@ -30,11 +36,9 @@ Respond ONLY with JSON in exactly this shape:
     });
 
     const data = await response.json();
-
     if (!data.choices) {
       return res.status(500).json({ openai_error: data });
     }
-
     const plan = JSON.parse(data.choices[0].message.content);
     res.status(200).json(plan);
   } catch (err) {
