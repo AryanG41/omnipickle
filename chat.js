@@ -4,16 +4,15 @@ const sendBtn = document.getElementById("sendBtn");
 
 let profile = { skill: "5", weaknesses: [] };
 let conversation = [];
+let storageKey = "omnipickle_chat";
 
 async function init() {
   const { data: { user } } = await db.auth.getUser();
   if (!user) { window.location.href = "index.html"; return; }
+  storageKey = "omnipickle_chat_" + user.id;
 
   const { data: profiles } = await db
-    .from("profiles")
-    .select("skill, weaknesses")
-    .eq("user_id", user.id);
-
+    .from("profiles").select("skill, weaknesses").eq("user_id", user.id);
   if (profiles && profiles.length > 0) {
     profile = {
       skill: profiles[0].skill,
@@ -21,7 +20,13 @@ async function init() {
     };
   }
 
-  addMessage("coach", "Hey! I'm your OmniPickle coach. Ask me anything about your game.");
+  const saved = localStorage.getItem(storageKey);
+  if (saved) {
+    conversation = JSON.parse(saved);
+    conversation.forEach(m => addMessage(m.role === "user" ? "user" : "coach", m.content));
+  } else {
+    addMessage("coach", "Hey! I'm your OmniPickle coach. Ask me anything about your game.");
+  }
 }
 
 function addMessage(who, text) {
@@ -33,6 +38,10 @@ function addMessage(who, text) {
   return div;
 }
 
+function saveConversation() {
+  localStorage.setItem(storageKey, JSON.stringify(conversation));
+}
+
 async function send() {
   const text = userInput.value.trim();
   if (!text) return;
@@ -40,6 +49,7 @@ async function send() {
 
   addMessage("user", text);
   conversation.push({ role: "user", content: text });
+  saveConversation();
 
   const thinking = addMessage("coach", "…");
 
@@ -47,12 +57,13 @@ async function send() {
     const resp = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: conversation, profile: profile }),
+      body: JSON.stringify({ messages: conversation.slice(-20), profile: profile }),
     });
     const data = await resp.json();
     const reply = data.reply || "Sorry, I couldn't answer that.";
     thinking.textContent = reply;
     conversation.push({ role: "assistant", content: reply });
+    saveConversation();
   } catch (err) {
     thinking.textContent = "Something went wrong. Try again.";
   }
