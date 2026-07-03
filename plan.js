@@ -12,6 +12,7 @@ let userId = null;
 let skill = null;
 let goal = 7;
 let doneThisWeek = 0;
+let mode = localStorage.getItem("omnipickle_mode") || "partner";
 
 async function loadPlan() {
   const { data: { user } } = await db.auth.getUser();
@@ -19,9 +20,7 @@ async function loadPlan() {
   userId = user.id;
 
   const { data: profiles } = await db
-    .from("profiles")
-    .select("skill, weaknesses, weekly_goal")
-    .eq("user_id", userId);
+    .from("profiles").select("skill, weaknesses, weekly_goal").eq("user_id", userId);
   if (!profiles || profiles.length === 0) { window.location.href = "onboarding.html"; return; }
 
   skill = profiles[0].skill;
@@ -50,7 +49,7 @@ async function loadPlan() {
     const resp = await fetch("/api/generate-drills", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ skill, weaknesses }),
+      body: JSON.stringify({ skill, weaknesses, mode }),
     });
     const result = await resp.json();
     if (!result.plan) throw new Error("No plan");
@@ -59,6 +58,10 @@ async function loadPlan() {
       <h2>Your Practice Plan</h2>
       <p>Your level: <span class="badge">${skill} — ${skillWord(skill)}</span></p>
       <p class="progress" id="progress"></p>
+      <div class="modeToggle">
+        <button class="modeBtn ${mode === "partner" ? "active" : ""}" data-mode="partner">With a partner</button>
+        <button class="modeBtn ${mode === "solo" ? "active" : ""}" data-mode="solo">Solo</button>
+      </div>
       <p class="intro">Check off drills as you finish — fresh ones appear automatically.</p>
     `;
     result.plan.forEach((section) => {
@@ -78,6 +81,13 @@ async function loadPlan() {
 
     document.querySelectorAll(".drillCheck").forEach((box) => {
       box.addEventListener("change", () => onCheck(box));
+    });
+    document.querySelectorAll(".modeBtn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        mode = btn.dataset.mode;
+        localStorage.setItem("omnipickle_mode", mode);
+        loadPlan();
+      });
     });
   } catch (err) {
     document.querySelector(".intro").textContent = "Couldn't generate drills right now. Refresh to try again.";
@@ -117,7 +127,7 @@ async function getOneDrill(skill, focus) {
   const resp = await fetch("/api/generate-drills", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ skill, weaknesses: [focus] }),
+    body: JSON.stringify({ skill, weaknesses: [focus], mode }),
   });
   const result = await resp.json();
   const drills = result.plan[0].drills;

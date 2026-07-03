@@ -486,3 +486,20 @@ h3 {
   text-decoration: none;
 }
 .forgotLink:hover { color: #1f3a5a; text-decoration: underline; }
+.modeToggle { display: flex; gap: 8px; margin-bottom: 16px; }
+.modeBtn {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #1f3a5a;
+  background: #fff;
+  color: #1f3a5a;
+  border-radius: 10px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+.modeBtn.active {
+  background: #1f3a5a;
+  color: #f3ecd9;
+}
