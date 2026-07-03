@@ -525,3 +525,22 @@ h3 {
   font-weight: 600;
   cursor: pointer;
 }
+.drillFeedback {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.fbBtn {
+  background: none;
+  border: 1px solid #d8d2c4;
+  color: #7a8496;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.fbBtn:hover {
+  border-color: #1f3a5a;
+  color: #1f3a5a;
+}

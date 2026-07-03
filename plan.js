@@ -14,6 +14,36 @@ let goal = 7;
 let doneThisWeek = 0;
 let mode = localStorage.getItem("omnipickle_mode") || "partner";
 
+function drillBodyHTML(d) {
+  return `<strong>${d.name}</strong><p>${d.desc}</p>
+    <div class="drillFeedback">
+      <button class="fbBtn" data-adjust="skip">Skip</button>
+      <button class="fbBtn" data-adjust="easier">Too hard</button>
+      <button class="fbBtn" data-adjust="harder">Too easy</button>
+    </div>`;
+}
+
+function attachFeedback(card) {
+  card.querySelectorAll(".fbBtn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const adjust = btn.dataset.adjust;
+      replaceDrill(card, adjust === "skip" ? null : adjust);
+    });
+  });
+}
+
+async function replaceDrill(card, adjust) {
+  const focus = card.dataset.focus;
+  card.classList.add("fading");
+  const newDrill = await getOneDrill(focus, adjust);
+  card.querySelector(".drillBody").innerHTML = drillBodyHTML(newDrill);
+  attachFeedback(card);
+  const box = card.querySelector(".drillCheck");
+  box.checked = false;
+  box.disabled = false;
+  card.classList.remove("fading");
+}
+
 async function loadPlan() {
   const { data: { user } } = await db.auth.getUser();
   if (!user) { window.location.href = "index.html"; return; }
@@ -70,7 +100,7 @@ async function loadPlan() {
         html += `
           <div class="drill" data-focus="${section.focus}">
             <input type="checkbox" class="drillCheck">
-            <div class="drillBody"><strong>${d.name}</strong><p>${d.desc}</p></div>
+            <div class="drillBody">${drillBodyHTML(d)}</div>
           </div>`;
       });
     });
@@ -82,6 +112,7 @@ async function loadPlan() {
     document.querySelectorAll(".drillCheck").forEach((box) => {
       box.addEventListener("change", () => onCheck(box));
     });
+    document.querySelectorAll(".drill").forEach((card) => attachFeedback(card));
     document.querySelectorAll(".modeBtn").forEach((btn) => {
       btn.addEventListener("click", () => {
         mode = btn.dataset.mode;
@@ -107,27 +138,20 @@ function updateProgress() {
 async function onCheck(box) {
   if (!box.checked) return;
   const card = box.closest(".drill");
-  const focus = card.dataset.focus;
   box.disabled = true;
 
-  await db.from("completions").insert({ user_id: userId, focus: focus });
+  await db.from("completions").insert({ user_id: userId, focus: card.dataset.focus });
   doneThisWeek++;
   updateProgress();
 
-  card.classList.add("fading");
-  const newDrill = await getOneDrill(skill, focus);
-
-  card.querySelector(".drillBody").innerHTML = `<strong>${newDrill.name}</strong><p>${newDrill.desc}</p>`;
-  box.checked = false;
-  box.disabled = false;
-  card.classList.remove("fading");
+  await replaceDrill(card, null);
 }
 
-async function getOneDrill(skill, focus) {
+async function getOneDrill(focus, adjust) {
   const resp = await fetch("/api/generate-drills", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ skill, weaknesses: [focus], mode }),
+    body: JSON.stringify({ skill, weaknesses: [focus], mode, adjust }),
   });
   const result = await resp.json();
   const drills = result.plan[0].drills;
