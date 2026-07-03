@@ -15,7 +15,27 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     email: emailInput.value,
     password: passwordInput.value,
   });
-  document.getElementById("forgotLink").addEventListener("click", async (e) => {
+
+  if (error) {
+    authMsg.textContent = "Error: " + error.message;
+    return;
+  }
+
+  authMsg.textContent = "Logged in!";
+
+  const { data: profiles } = await db
+    .from("profiles")
+    .select("user_id")
+    .eq("user_id", data.user.id);
+
+  if (profiles && profiles.length > 0) {
+    window.location.href = "home.html";
+  } else {
+    window.location.href = "onboarding.html";
+  }
+});
+
+document.getElementById("forgotLink").addEventListener("click", async (e) => {
   e.preventDefault();
   const email = emailInput.value;
   if (!email) {
@@ -28,24 +48,4 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
   authMsg.textContent = error
     ? "Error: " + error.message
     : "Email sent! Check your inbox for the reset link.";
-});
-
-  if (error) {
-    authMsg.textContent = "Error: " + error.message;
-    return;
-  }
-
-  authMsg.textContent = "Logged in!";
-
-  // Does this user already have a profile?
-  const { data: profiles } = await db
-    .from("profiles")
-    .select("user_id")
-    .eq("user_id", data.user.id);
-
-  if (profiles && profiles.length > 0) {
-    window.location.href = "home.html";        // returning user → straight to plan
-  } else {
-    window.location.href = "onboarding.html";  // new user → onboarding
-  }
 });
