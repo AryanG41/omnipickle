@@ -15,6 +15,20 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     email: emailInput.value,
     password: passwordInput.value,
   });
+  document.getElementById("forgotLink").addEventListener("click", async (e) => {
+  e.preventDefault();
+  const email = emailInput.value;
+  if (!email) {
+    authMsg.textContent = "Type your email above first, then tap Forgot password.";
+    return;
+  }
+  const { error } = await db.auth.resetPasswordForEmail(email, {
+    redirectTo: "https://omnipickle.vercel.app/update-password.html"
+  });
+  authMsg.textContent = error
+    ? "Error: " + error.message
+    : "Check your email for a reset link.";
+});
 
   if (error) {
     authMsg.textContent = "Error: " + error.message;

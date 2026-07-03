@@ -93,7 +93,7 @@ async function saveProfile() {
     return;
   }
 
-  window.location.href = "plan.html";
+  window.location.href = "home.html";
 }
 
 async function init() {
