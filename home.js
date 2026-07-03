@@ -24,10 +24,11 @@ async function loadHome() {
   if (!user) { window.location.href = "index.html"; return; }
 
   const { data: profiles } = await db
-    .from("profiles").select("weekly_goal").eq("user_id", user.id);
+    .from("profiles").select("weekly_goal, skill").eq("user_id", user.id);
   if (!profiles || profiles.length === 0) { window.location.href = "onboarding.html"; return; }
 
   const goal = parseInt(profiles[0].weekly_goal) || 7;
+  const skill = profiles[0].skill;
 
   const since = new Date(Date.now() - 40 * 24 * 60 * 60 * 1000).toISOString();
   const { data: completions } = await db
@@ -43,6 +44,13 @@ async function loadHome() {
     ? `<div class="streak"><i class="fa-solid fa-fire"></i> ${streak} day${streak === 1 ? "" : "s"} streak</div>`
     : `<div class="streak"><i class="fa-solid fa-fire"></i> Start your streak today</div>`;
 
+  const canLevelUp = done >= goal && parseFloat(skill) < 10;
+  const levelUpHtml = canLevelUp ? `
+    <div class="levelUp" id="levelUp">
+      <div class="levelUpText">You hit your weekly goal! Ready for tougher drills?</div>
+      <button id="levelUpBtn" class="levelUpBtn">Level up →</button>
+    </div>` : "";
+
   home.innerHTML = `
     <div class="appHeader">
       <img src="logo.jpeg" class="appLogo" alt="OmniPickle">
@@ -57,6 +65,8 @@ async function loadHome() {
       <div class="statNum">${done} <span>/ ${goal} drills</span></div>
       <div class="statBar"><div class="statFill" style="width:${pct}%"></div></div>
     </div>
+
+    ${levelUpHtml}
 
     <a href="plan.html" class="rowCard">
       <div class="rowIcon"><i class="fa-solid fa-list-check"></i></div>
@@ -85,7 +95,7 @@ async function loadHome() {
     <button id="logoutBtn" class="editBtn" style="margin-top:8px;">Log out</button>
 
     <div id="shareCard" style="position:absolute; left:-9999px; top:0; width:360px; background:#1f3a5a; color:#f3ecd9; padding:36px 30px; box-sizing:border-box;">
-      <img src="logo.jpeg" style="height:48px; margin-bottom:20px;">
+      <div style="font-size:20px; font-weight:700; margin-bottom:24px;">OmniPickle</div>
       <div style="font-size:15px; color:#aeb9cc;">My week</div>
       <div style="font-size:48px; font-weight:700; margin:4px 0;">${done} <span style="font-size:22px; color:#9fb0c8;">/ ${goal}</span></div>
       <div style="font-size:15px; color:#aeb9cc; margin-bottom:20px;">drills completed</div>
@@ -93,6 +103,16 @@ async function loadHome() {
       <div style="margin-top:28px; font-size:13px; color:#8595ad;">Training with OmniPickle</div>
     </div>
   `;
+
+  const levelBtn = document.getElementById("levelUpBtn");
+  if (levelBtn) {
+    levelBtn.addEventListener("click", async () => {
+      const newSkill = Math.min(10, parseFloat(skill) + 0.5);
+      await db.from("profiles").update({ skill: String(newSkill) }).eq("user_id", user.id);
+      document.getElementById("levelUp").innerHTML =
+        `<div class="levelUpText">Leveled up to ${newSkill}! Your next drills will be tougher.</div>`;
+    });
+  }
 
   document.getElementById("logoutBtn").addEventListener("click", async () => {
     await db.auth.signOut();
@@ -104,13 +124,13 @@ async function loadHome() {
     const canvas = await html2canvas(card, { scale: 2 });
     canvas.toBlob(async (blob) => {
       const file = new File([blob], "omnipickle-week.png", { type: "image/png" });
-      if (navigator.share) {
-        try {
+      try {
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
           await navigator.share({ files: [file], title: "My OmniPickle week" });
           return;
-        } catch (e) {
-          if (e.name === "AbortError") return;
         }
+      } catch (e) {
+        if (e.name === "AbortError") return;
       }
       const url = URL.createObjectURL(blob);
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);

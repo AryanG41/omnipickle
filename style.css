@@ -503,3 +503,25 @@ h3 {
   background: #1f3a5a;
   color: #f3ecd9;
 }
+.levelUp {
+  background: #eef1e5;
+  border: 1px solid #1f3a5a;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.levelUpText { color: #1f3a5a; font-weight: 600; font-size: 14px; }
+.levelUpBtn {
+  align-self: flex-start;
+  background: #1f3a5a;
+  color: #f3ecd9;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
