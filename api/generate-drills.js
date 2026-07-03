@@ -10,13 +10,19 @@ export default async function handler(req, res) {
     const skill = body.skill;
     const weaknesses = body.weaknesses || [];
     const mode = body.mode || "partner";
+    const adjust = body.adjust;
 
     const modeLine = mode === "solo"
       ? "IMPORTANT: The player is training ALONE with no partner. Only give drills they can do solo — wall drills, footwork and agility, serving practice, target practice, shadow swings. Do NOT include any drill that needs a partner or a feeder."
       : "The player has a partner to train with.";
 
+    let adjustLine = "";
+    if (adjust === "harder") adjustLine = "Make these drills noticeably more challenging than usual for this level.";
+    else if (adjust === "easier") adjustLine = "Make these drills a bit easier and more approachable.";
+
     const prompt = `You are an expert pickleball coach. A player rates their skill ${skill} out of 10.
 ${modeLine}
+${adjustLine}
 Create a practice plan with 3 specific, varied drills for EACH of these focus areas: ${weaknesses.join(", ")}.
 Match the difficulty to their level. Each drill needs a short punchy name and a 1-2 sentence description with concrete reps or targets.
 Respond ONLY with JSON in exactly this shape:
