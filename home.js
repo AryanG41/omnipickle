@@ -86,11 +86,11 @@ async function loadHome() {
       <div class="rowChevron">›</div>
     </a>
 
-    <button id="shareBtn" class="rowCard" style="border:0; width:100%; cursor:pointer; font-family:inherit; text-align:left;">
+    <div id="shareBtn" class="rowCard" style="cursor:pointer;">
       <div class="rowIcon"><i class="fa-solid fa-share-nodes"></i></div>
       <div class="rowText"><div class="rowTitle">Share my week</div><div class="rowSub">Post your progress</div></div>
       <div class="rowChevron">›</div>
-    </button>
+    </div>
 
     <button id="logoutBtn" class="editBtn" style="margin-top:8px;">Log out</button>
 
