@@ -7,7 +7,7 @@ document.getElementById("signupBtn").addEventListener("click", async () => {
     email: emailInput.value,
     password: passwordInput.value,
   });
-  authMsg.textContent = error ? "Error: " + error.message : "Account created! Now click Log In.";
+  authMsg.textContent = error ? "Error: " + error.message : "Account created! Check your email to confirm, then log in.";
 });
 
 document.getElementById("loginBtn").addEventListener("click", async () => {
