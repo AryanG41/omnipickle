@@ -24,11 +24,12 @@ async function loadHome() {
   if (!user) { window.location.href = "index.html"; return; }
 
   const { data: profiles } = await db
-    .from("profiles").select("weekly_goal, skill").eq("user_id", user.id);
+    .from("profiles").select("weekly_goal, skill, last_levelup").eq("user_id", user.id);
   if (!profiles || profiles.length === 0) { window.location.href = "onboarding.html"; return; }
 
   const goal = parseInt(profiles[0].weekly_goal) || 7;
   const skill = profiles[0].skill;
+  const lastLevelup = profiles[0].last_levelup ? new Date(profiles[0].last_levelup).getTime() : 0;
 
   const since = new Date(Date.now() - 40 * 24 * 60 * 60 * 1000).toISOString();
   const { data: completions } = await db
@@ -40,14 +41,16 @@ async function loadHome() {
   const pct = Math.min(100, Math.round((done / goal) * 100));
   const streak = calcStreak(rows);
 
+  const doneSinceLevelup = rows.filter(r => new Date(r.created_at).getTime() > lastLevelup).length;
+  const canLevelUp = doneSinceLevelup >= goal && parseFloat(skill) < 10;
+
   const streakHtml = streak > 0
     ? `<div class="streak"><i class="fa-solid fa-fire"></i> ${streak} day${streak === 1 ? "" : "s"} streak</div>`
     : `<div class="streak"><i class="fa-solid fa-fire"></i> Start your streak today</div>`;
 
-  const canLevelUp = done >= goal && parseFloat(skill) < 10;
   const levelUpHtml = canLevelUp ? `
     <div class="levelUp" id="levelUp">
-      <div class="levelUpText">You hit your weekly goal! Ready for tougher drills?</div>
+      <div class="levelUpText">You've earned it — ready for tougher drills?</div>
       <button id="levelUpBtn" class="levelUpBtn">Level up →</button>
     </div>` : "";
 
@@ -108,7 +111,9 @@ async function loadHome() {
   if (levelBtn) {
     levelBtn.addEventListener("click", async () => {
       const newSkill = Math.min(10, parseFloat(skill) + 0.5);
-      await db.from("profiles").update({ skill: String(newSkill) }).eq("user_id", user.id);
+      await db.from("profiles")
+        .update({ skill: String(newSkill), last_levelup: new Date().toISOString() })
+        .eq("user_id", user.id);
       document.getElementById("levelUp").innerHTML =
         `<div class="levelUpText">Leveled up to ${newSkill}! Your next drills will be tougher.</div>`;
     });
