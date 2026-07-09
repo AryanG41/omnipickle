@@ -589,3 +589,11 @@ h3 {
 .lf i { color: #1f3a5a; width: 20px; text-align: center; }
 .landingLogin { color: #7a8496; font-size: 13px; text-decoration: none; }
 .landingLogin:hover { color: #1f3a5a; text-decoration: underline; }
+#landing { max-width: 400px; }
+.brandRow { margin-bottom: 16px; }
+.landingTitle { font-size: 24px; margin-bottom: 8px; }
+.landingSub { margin-bottom: 18px; }
+.phone { width: 175px; margin-bottom: 20px; }
+.landingCta { margin-bottom: 20px; }
+.landingFeatures { margin-bottom: 16px; }
+.lf { font-size: 13px; margin-bottom: 11px; }
