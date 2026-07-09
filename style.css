@@ -612,3 +612,8 @@ h3 {
 .bar { width: 100%; background: #1f3a5a; border-radius: 6px 6px 0 0; min-height: 3px; }
 .barLabel { font-size: 10px; color: #7a8496; margin-top: 6px; }
 .chartNote { color: #7a8496; font-size: 13px; }
+.footer {
+  color: #a8b0bc;
+  font-size: 12px;
+  margin-top: 22px;
+}
