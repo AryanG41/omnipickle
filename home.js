@@ -76,6 +76,11 @@ async function loadHome() {
       <div class="rowText"><div class="rowTitle">My weekly plan</div><div class="rowSub">Your drills for the week</div></div>
       <div class="rowChevron">›</div>
     </a>
+    <a href="history.html" class="rowCard">
+      <div class="rowIcon"><i class="fa-solid fa-chart-simple"></i></div>
+      <div class="rowText"><div class="rowTitle">My progress</div><div class="rowSub">See how you're improving</div></div>
+      <div class="rowChevron">›</div>
+    </a>
 
     <a href="chat.html" class="rowCard">
       <div class="rowIcon"><i class="fa-solid fa-comments"></i></div>

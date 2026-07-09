@@ -597,3 +597,18 @@ h3 {
 .landingCta { margin-bottom: 20px; }
 .landingFeatures { margin-bottom: 16px; }
 .lf { font-size: 13px; margin-bottom: 11px; }
+#history { max-width: 440px; background: transparent; box-shadow: none; padding: 0 4px; }
+.chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 6px;
+  height: 150px;
+  margin: 10px 0 8px;
+}
+.barCol { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; }
+.barVal { font-size: 11px; color: #7a8496; margin-bottom: 4px; }
+.barTrack { flex: 1; width: 100%; display: flex; align-items: flex-end; }
+.bar { width: 100%; background: #1f3a5a; border-radius: 6px 6px 0 0; min-height: 3px; }
+.barLabel { font-size: 10px; color: #7a8496; margin-top: 6px; }
+.chartNote { color: #7a8496; font-size: 13px; }
