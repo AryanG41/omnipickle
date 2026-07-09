@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmniPickle — Sign in</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1f3a5a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="OmniPickle">
+  <link rel="apple-touch-icon" href="logo.jpeg">
+</head>
+<body>
+  <main id="login">
+    <img src="logo.jpeg" class="appLogo" alt="OmniPickle">
+    <h2 class="loginTitle">Welcome back</h2>
+    <p class="loginSub">Log in to keep improving</p>
+
+    <input type="email" id="email" class="field" placeholder="Email">
+    <input type="password" id="password" class="field" placeholder="Password">
+
+    <button id="loginBtn" class="btnPrimary">Log in</button>
+    <button id="signupBtn" class="btnSecondary">Create account</button>
+
+    <a href="#" id="forgotLink" class="forgotLink">Forgot password?</a>
+
+    <p id="authMsg" class="authMsg"></p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+  <script src="login.js"></script>
+</body>
+</html>

@@ -544,3 +544,18 @@ h3 {
   border-color: #1f3a5a;
   color: #1f3a5a;
 }
+#landing {
+  max-width: 440px;
+  text-align: center;
+  background: transparent;
+  box-shadow: none;
+}
+#landing .appLogo { height: 100px; display: block; margin: 8px auto 12px; }
+.landingTitle { font-size: 28px; font-weight: 700; color: #1f3a5a; margin: 0 0 8px; }
+.landingSub { color: #7a8496; font-size: 15px; margin: 0 0 24px; }
+.landingCta { max-width: 260px; margin: 0 auto 28px; }
+.landingFeatures { text-align: left; margin: 0 auto 24px; max-width: 320px; }
+.lf { display: flex; align-items: center; gap: 12px; color: #1f3a5a; font-size: 14px; margin-bottom: 14px; }
+.lf i { color: #1f3a5a; width: 20px; text-align: center; }
+.landingLogin { color: #7a8496; font-size: 13px; text-decoration: none; }
+.landingLogin:hover { color: #1f3a5a; text-decoration: underline; }

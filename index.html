@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OmniPickle — Sign in</title>
+  <title>OmniPickle — Your AI Pickleball Coach</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1f3a5a">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,24 +16,28 @@
   <link rel="apple-touch-icon" href="logo.jpeg">
 </head>
 <body>
-  <main id="login">
+  <main id="landing">
     <img src="logo.jpeg" class="appLogo" alt="OmniPickle">
-    <h2 class="loginTitle">Welcome back</h2>
-    <p class="loginSub">Log in to keep improving</p>
+    <h1 class="landingTitle">Your AI pickleball coach</h1>
+    <p class="landingSub">Personalized drills, weekly goals, and a coach in your pocket. Free.</p>
+    <a href="login.html" class="btnPrimary landingCta">Get started</a>
 
-    <input type="email" id="email" class="field" placeholder="Email">
-    <input type="password" id="password" class="field" placeholder="Password">
+    <div class="landingFeatures">
+      <div class="lf"><i class="fa-solid fa-list-check"></i> Drills built for your level — fresh every time</div>
+      <div class="lf"><i class="fa-solid fa-fire"></i> Weekly goals and streaks to keep you going</div>
+      <div class="lf"><i class="fa-solid fa-comments"></i> Ask your AI coach anything, anytime</div>
+    </div>
 
-    <button id="loginBtn" class="btnPrimary">Log in</button>
-    <button id="signupBtn" class="btnSecondary">Create account</button>
-
-    <a href="#" id="forgotLink" class="forgotLink">Forgot password?</a>
-
-    <p id="authMsg" class="authMsg"></p>
+    <a href="login.html" class="landingLogin">Already have an account? Log in</a>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase.js"></script>
-  <script src="login.js"></script>
+  <script>
+    (async () => {
+      const { data: { user } } = await db.auth.getUser();
+      if (user) window.location.href = "home.html";
+    })();
+  </script>
 </body>
 </html>
