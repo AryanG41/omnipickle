@@ -101,6 +101,8 @@ async function loadHome() {
     </div>
 
     <button id="logoutBtn" class="editBtn" style="margin-top:8px;">Log out</button>
+    <button id="logoutBtn" class="editBtn" style="margin-top:8px;">Log out</button>
+    <p class="footer">© 2026 OmniPickle. All rights reserved.</p>
 
     <div id="shareCard" style="position:absolute; left:-9999px; top:0; width:360px; background:#1f3a5a; color:#f3ecd9; padding:36px 30px; box-sizing:border-box;">
       <div style="font-size:20px; font-weight:700; margin-bottom:24px;">OmniPickle</div>
