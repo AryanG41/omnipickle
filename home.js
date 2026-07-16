@@ -1,5 +1,13 @@
 const home = document.getElementById("home");
 
+function showToast(msg) {
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2000);
+}
+
 function dayKey(d) {
   return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
 }
@@ -76,6 +84,7 @@ async function loadHome() {
       <div class="rowText"><div class="rowTitle">My weekly plan</div><div class="rowSub">Your drills for the week</div></div>
       <div class="rowChevron">›</div>
     </a>
+
     <a href="history.html" class="rowCard">
       <div class="rowIcon"><i class="fa-solid fa-chart-simple"></i></div>
       <div class="rowText"><div class="rowTitle">My progress</div><div class="rowSub">See how you're improving</div></div>
@@ -131,10 +140,12 @@ async function loadHome() {
   });
 
   document.getElementById("shareBtn").addEventListener("click", async () => {
+    showToast("Preparing your image…");
     const card = document.getElementById("shareCard");
     const canvas = await html2canvas(card, { scale: 2 });
     canvas.toBlob(async (blob) => {
       const file = new File([blob], "omnipickle-week.png", { type: "image/png" });
+
       try {
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           await navigator.share({ files: [file], title: "My OmniPickle week" });
@@ -143,6 +154,7 @@ async function loadHome() {
       } catch (e) {
         if (e.name === "AbortError") return;
       }
+
       const url = URL.createObjectURL(blob);
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
       if (isIOS) {
@@ -162,14 +174,24 @@ async function loadHome() {
         overlay.appendChild(note);
         overlay.appendChild(closeBtn);
         document.body.appendChild(overlay);
-      } else {
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "omnipickle-week.png";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+        return;
       }
+
+      try {
+        if (navigator.clipboard && window.ClipboardItem) {
+          await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+          showToast("Copied! Paste it anywhere.");
+          return;
+        }
+      } catch (e) {}
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "omnipickle-week.png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToast("Image downloaded!");
     });
   });
 }
