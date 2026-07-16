@@ -74,7 +74,7 @@ async function loadPlan() {
     .gte("created_at", weekAgo).order("created_at", { ascending: false });
   doneThisWeek = completions ? completions.length : 0;
   const doneHtml = (completions && completions.length)
-    ? completions.map(c => `<div class="doneItem"><i class="fa-solid fa-check"></i> ${c.drill_name || "Drill"}</div>`).join("")
+    ? completions.map(c => `<div class="doneItem"><i class="fa-solid fa-check"></i> ${(c.drill_name || "Drill").replace(/[\s,.;:]+$/, "")}</div>`).join("")
     : `<div class="doneEmpty">Nothing yet — check off a drill to see it here.</div>`;
 
   planArea.innerHTML = `
