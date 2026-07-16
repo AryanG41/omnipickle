@@ -1,5 +1,4 @@
 const PUBLIC_KEY = "BF7InIDy1dfUBL68wJwux5WsSwLP_aoLfXyuJryXVbcvkmrvvSY3bC0c71ZKkYWx_6OH2MJUG5dXz8_L2l-kGCc";
-const statusEl = document.getElementById("status");
 
 function urlBase64ToUint8Array(base64String) {
   const padding = "=".repeat((4 - base64String.length % 4) % 4);
@@ -10,29 +9,36 @@ function urlBase64ToUint8Array(base64String) {
   return arr;
 }
 
-document.getElementById("enableBtn").addEventListener("click", async () => {
+async function enableReminders() {
   try {
-    statusEl.textContent = "Registering…";
+    if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+      alert("Your browser doesn't support notifications. On iPhone, add OmniPickle to your home screen first, then open it from there.");
+      return;
+    }
     const reg = await navigator.serviceWorker.register("sw.js");
     await navigator.serviceWorker.ready;
 
     const permission = await Notification.requestPermission();
-    if (permission !== "granted") { statusEl.textContent = "Permission denied."; return; }
+    if (permission !== "granted") {
+      alert("Notifications are blocked. Turn them on in your settings to get reminders.");
+      return;
+    }
 
     const sub = await reg.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY),
     });
 
-    statusEl.textContent = "Subscribed. Sending test…";
-    const resp = await fetch("/api/send-push", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ subscription: sub, title: "OmniPickle", message: "Push works! 🎾" }),
-    });
-    const data = await resp.json();
-    statusEl.textContent = resp.ok ? "Sent! Watch for the notification." : "Error: " + JSON.stringify(data);
+    const { data: { user } } = await db.auth.getUser();
+    if (!user) { alert("Please log in first."); return; }
+
+    await db.from("push_subscriptions").upsert(
+      { user_id: user.id, subscription: JSON.stringify(sub) },
+      { onConflict: "user_id" }
+    );
+
+    alert("Reminders are on! We'll nudge you if your streak's about to break.");
   } catch (err) {
-    statusEl.textContent = "Error: " + err;
+    alert("Couldn't turn on reminders: " + err);
   }
-});
+}

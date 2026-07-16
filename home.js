@@ -102,6 +102,11 @@ async function loadHome() {
       <div class="rowText"><div class="rowTitle">Edit my profile</div><div class="rowSub">Level, goals, and focus areas</div></div>
       <div class="rowChevron">›</div>
     </a>
+    <div class="rowCard" style="cursor:pointer;" onclick="enableReminders()">
+      <div class="rowIcon"><i class="fa-solid fa-bell"></i></div>
+      <div class="rowText"><div class="rowTitle">Turn on reminders</div><div class="rowSub">Get a nudge to keep your streak</div></div>
+      <div class="rowChevron">›</div>
+    </div>
 
     <div id="shareBtn" class="rowCard" style="cursor:pointer;">
       <div class="rowIcon"><i class="fa-solid fa-share-nodes"></i></div>
