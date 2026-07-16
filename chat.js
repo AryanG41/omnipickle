@@ -90,12 +90,11 @@ async function send() {
 sendBtn.addEventListener("click", send);
 userInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") send();
+});
 document.getElementById("clearChat").addEventListener("click", () => {
   localStorage.removeItem(storageKey);
   conversation = [];
   messagesEl.innerHTML = "";
   addMessage("coach", "Hey! I'm your OmniPickle coach. Ask me anything about your game.");
 });
-});
-
 init();
