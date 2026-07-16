@@ -23,8 +23,8 @@ function renderOnboarding() {
   app.innerHTML = `
     <h2>Let's set up your coaching</h2>
 
-    <p><strong>Rate your skill (1 = beginner, 10 = advanced):</strong></p>
-    <p style="font-size:0.9em; opacity:0.75;">Not sure? Just estimate — the coach adjusts as you go.</p>
+    <p><strong>Rate your skill from 1 to 10 (1 = beginner, 10 = advanced):</strong></p>
+    <p style="font-size:0.9em; opacity:0.75;">This is our own scale, not an official DUPR rating. Not sure? Just estimate — the coach adjusts as you go.</p>
     <input type="range" id="skill" min="1" max="10" value="5" step="0.5">
     <span id="skillValue">5</span>
 
