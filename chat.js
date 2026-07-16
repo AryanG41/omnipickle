@@ -3,6 +3,7 @@ const userInput = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
 let profile = { skill: "5", weaknesses: [] };
+let context = { goal: null, doneThisWeek: 0, recentDrills: [] };
 let conversation = [];
 let storageKey = "omnipickle_chat";
 
@@ -12,12 +13,22 @@ async function init() {
   storageKey = "omnipickle_chat_" + user.id;
 
   const { data: profiles } = await db
-    .from("profiles").select("skill, weaknesses").eq("user_id", user.id);
+    .from("profiles").select("skill, weaknesses, weekly_goal").eq("user_id", user.id);
   if (profiles && profiles.length > 0) {
     profile = {
       skill: profiles[0].skill,
       weaknesses: JSON.parse(profiles[0].weaknesses || "[]"),
     };
+    context.goal = profiles[0].weekly_goal;
+  }
+
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const { data: completions } = await db
+    .from("completions").select("drill_name, created_at").eq("user_id", user.id)
+    .gte("created_at", weekAgo).order("created_at", { ascending: false });
+  if (completions) {
+    context.doneThisWeek = completions.length;
+    context.recentDrills = completions.slice(0, 10).map(c => c.drill_name).filter(Boolean);
   }
 
   const saved = localStorage.getItem(storageKey);
@@ -64,7 +75,7 @@ async function send() {
     const resp = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: conversation.slice(-20), profile: profile }),
+      body: JSON.stringify({ messages: conversation.slice(-20), profile: profile, context: context }),
     });
     const data = await resp.json();
     const reply = data.reply || "Sorry, I couldn't answer that.";
