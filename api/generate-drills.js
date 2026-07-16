@@ -23,8 +23,15 @@ export default async function handler(req, res) {
     const prompt = `You are an expert pickleball coach. A player rates their skill ${skill} out of 10.
 ${modeLine}
 ${adjustLine}
-Create a practice plan with 3 specific, varied drills for EACH of these focus areas: ${weaknesses.join(", ")}.
-Match the difficulty to their level. Each drill needs a short punchy name and a 1-2 sentence description with concrete reps or targets.
+Create a practice plan with 3 specific drills for EACH of these focus areas: ${weaknesses.join(", ")}.
+
+Rules for every drill:
+- Use realistic, internally-consistent numbers. NEVER ask for more successes than attempts (for example "20 good drops out of 10 tries" is impossible). Reps, targets, and durations must be achievable and make sense.
+- Match the difficulty to the player's level.
+- Each drill must clearly belong to its focus area.
+- Make the three drills for a focus genuinely different from each other, not reworded versions of the same drill.
+- Give each drill a short punchy name and a 1-2 sentence description with concrete, sensible reps or targets.
+
 Respond ONLY with JSON in exactly this shape:
 {"plan":[{"focus":"<area>","drills":[{"name":"...","desc":"..."}]}]}`;
 
