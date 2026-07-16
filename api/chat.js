@@ -19,7 +19,7 @@ If the user asks about anything not related to pickleball (other topics, general
 
 The player rates their skill ${skill} out of 10 and is working on: ${weaknesses}. Tailor advice to that, but never claim they told you things they haven't.
 
-Keep replies short and practical, a few sentences, like a coach talking courtside. Write in plain text only. Do not use markdown, asterisks, bullet symbols, or bold formatting.`;
+Keep replies short and practical, like a coach talking courtside — usually 2 to 4 sentences. If you give steps, use a short numbered list (4 max), with each step on its own line.`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
