@@ -634,3 +634,13 @@ h3 {
 }
 .doneItem i { color: #2e7d32; }
 .doneEmpty { color: #7a8496; font-size: 13px; }
+.clearChat {
+  display: block;
+  margin: 0 0 8px auto;
+  background: none;
+  border: none;
+  color: #7a8496;
+  font-size: 13px;
+  cursor: pointer;
+}
+.clearChat:hover { color: #1f3a5a; text-decoration: underline; }
