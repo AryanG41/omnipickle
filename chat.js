@@ -29,10 +29,17 @@ async function init() {
   }
 }
 
+function formatReply(text) {
+  let t = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  t = t.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  t = t.replace(/\n/g, "<br>");
+  return t;
+}
+
 function addMessage(who, text) {
   const div = document.createElement("div");
   div.className = "msg " + who;
-  div.textContent = text;
+  div.innerHTML = formatReply(text);
   messagesEl.appendChild(div);
   messagesEl.scrollTop = messagesEl.scrollHeight;
   return div;
@@ -61,7 +68,7 @@ async function send() {
     });
     const data = await resp.json();
     const reply = data.reply || "Sorry, I couldn't answer that.";
-    thinking.textContent = reply;
+    thinking.innerHTML = formatReply(reply);
     conversation.push({ role: "assistant", content: reply });
     saveConversation();
   } catch (err) {
