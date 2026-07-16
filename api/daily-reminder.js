@@ -19,7 +19,7 @@ export default async function handler(req, res) {
 
     const payload = JSON.stringify({
       title: "OmniPickle",
-      body: "Time to train — keep your streak alive! 🎾",
+      body: "Time to train — keep your streak alive!",
     });
 
     let sent = 0;
