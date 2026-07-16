@@ -44,6 +44,17 @@ async function replaceDrill(card, adjust) {
   card.classList.remove("fading");
 }
 
+function addDoneItem(name) {
+  const list = document.getElementById("doneList");
+  if (!list) return;
+  const empty = list.querySelector(".doneEmpty");
+  if (empty) empty.remove();
+  const div = document.createElement("div");
+  div.className = "doneItem";
+  div.innerHTML = `<i class="fa-solid fa-check"></i> ${name}`;
+  list.prepend(div);
+}
+
 async function loadPlan() {
   const { data: { user } } = await db.auth.getUser();
   if (!user) { window.location.href = "index.html"; return; }
@@ -59,8 +70,12 @@ async function loadPlan() {
 
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const { data: completions } = await db
-    .from("completions").select("id").eq("user_id", userId).gte("created_at", weekAgo);
+    .from("completions").select("drill_name, created_at").eq("user_id", userId)
+    .gte("created_at", weekAgo).order("created_at", { ascending: false });
   doneThisWeek = completions ? completions.length : 0;
+  const doneHtml = (completions && completions.length)
+    ? completions.map(c => `<div class="doneItem"><i class="fa-solid fa-check"></i> ${c.drill_name || "Drill"}</div>`).join("")
+    : `<div class="doneEmpty">Nothing yet — check off a drill to see it here.</div>`;
 
   planArea.innerHTML = `
     <h2>Your Practice Plan</h2>
@@ -104,6 +119,8 @@ async function loadPlan() {
           </div>`;
       });
     });
+
+    html += `<h3>Done this week</h3><div id="doneList">${doneHtml}</div>`;
     html += `<a href="onboarding.html" class="editBtn">Edit my focus areas</a>`;
     html += `<a href="chat.html" class="editBtn" style="margin-left:10px;">Talk to your coach</a>`;
     planArea.innerHTML = html;
@@ -138,11 +155,13 @@ function updateProgress() {
 async function onCheck(box) {
   if (!box.checked) return;
   const card = box.closest(".drill");
+  const name = card.querySelector(".drillBody strong").textContent;
   box.disabled = true;
 
-  await db.from("completions").insert({ user_id: userId, focus: card.dataset.focus });
+  await db.from("completions").insert({ user_id: userId, focus: card.dataset.focus, drill_name: name });
   doneThisWeek++;
   updateProgress();
+  addDoneItem(name);
 
   await replaceDrill(card, null);
 }
