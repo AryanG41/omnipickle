@@ -155,7 +155,7 @@ function updateProgress() {
 async function onCheck(box) {
   if (!box.checked) return;
   const card = box.closest(".drill");
-  const name = card.querySelector(".drillBody strong").textContent;
+  const name = card.querySelector(".drillBody strong").textContent.replace(/[\s,.;:]+$/, "");
   box.disabled = true;
 
   await db.from("completions").insert({ user_id: userId, focus: card.dataset.focus, drill_name: name });
