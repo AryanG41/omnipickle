@@ -656,3 +656,5 @@ h3 {
   font-size: 14px;
   z-index: 10000;
 }
+.rowText { text-align: left; }
+.statCard { text-align: left; }
