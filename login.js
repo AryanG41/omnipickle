@@ -43,7 +43,7 @@ document.getElementById("forgotLink").addEventListener("click", async (e) => {
     return;
   }
   const { error } = await db.auth.resetPasswordForEmail(email, {
-    redirectTo: "https://omnipickle.vercel.app/update-password.html"
+    redirectTo: "https://omnipickle.app/update-password.html"
   });
   authMsg.textContent = error
     ? "Error: " + error.message
